@@ -13,18 +13,29 @@ width = [14.87, 14.85, 14.95, 14.87,15.23]; % Define the dimensions of the speci
 thick = [3.22, 3.20, 3.10, 3.25, 3.32];
 A = width.*thick;
 
-stress = zeros(1,length(force));
-strain = zeros(1,length(force));
-strain(1) = gauge1(1); 
+% find stress
 stress = force./A(specnum);
-for i = 2:length(force) 
-    if gauge1(i) > 0.02 && i > 2 % could use a better testing value
-        % If the strain gauge is broken, use laser displacement data to calculate the strain
-        strain(i) = strain(i-1) + (lasdisp(i)-lasdisp(i-1))/lasdisp(1);
-    else
-        % Otherwise, use the strain gauge data to calculate the strain
-         strain(i) = gauge1(i);
+
+strain = zeros(1,length(force));
+strain(1) = gauge1(1);
+
+% Calculate average rate of change of strain gauge data over first 10% of data
+n_start = round(length(gauge1)*0.1);
+slope_start = mean(diff(gauge1(1:n_start))./diff(lasdisp(1:n_start)));
+
+for i = 2:length(force)
+    % Check whether to switch to using laser displacement data to calculate strain
+    if i > n_start && i < length(gauge1)*0.9
+        slope_i = mean(diff(gauge1(i-n_start:i))./diff(lasdisp(i-n_start:i)));
+        if abs(slope_i - slope_start) > 0.05 * abs(slope_start)
+            % If the strain gauge has broken, use laser displacement data to calculate the strain
+            strain(i) = strain(i-1) + (lasdisp(i)-lasdisp(i-1))/lasdisp(1);
+            continue
+        end
     end
+    
+    % Otherwise, use the strain gauge data to calculate the strain
+    strain(i) = gauge1(i);
 end
 
 plot(strain,stress)
