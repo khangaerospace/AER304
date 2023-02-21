@@ -1,2 +1,2 @@
 # AER304
-=Aerospace Laboratory II
+Aerospace Laboratory II
