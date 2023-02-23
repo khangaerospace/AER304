@@ -14,8 +14,10 @@ thick = [3.22, 3.20, 3.10, 3.25, 3.32];
 A = width.*thick;
 
 % find stress
-stress = force./A(specnum);
+stress_all = force./A(specnum);
 
+stress = zeros(1,length(force));
+stress(1) = stress_all(1);
 strain = zeros(1,length(force));
 strain(1) = gauge1(1);
 
@@ -30,6 +32,12 @@ for i = 2:length(force)
         if abs(slope_i - slope_start) > 0.05 * abs(slope_start)
             % If the strain gauge has broken, use laser displacement data to calculate the strain
             strain(i) = strain(i-1) + (lasdisp(i)-lasdisp(i-1))/lasdisp(i-1);
+            stress(i) = stress_all(i);
+            % we need to check when the material break.
+            if stress(i) < stress(i-1)
+                break
+            end
+            
             continue
         end
     end
@@ -38,7 +46,8 @@ for i = 2:length(force)
     strain(i) = abs(gauge1(i));
     dx = abs(gauge1(i));
     dy = abs(gauge2(i));
-    linestress = stress(i); % for calculating the stress before yeilding
+    stress(i) = stress_all(i);
+    linestress = stress_all(i); % for calculating the stress before yeilding
 end
 
 % find the poisson ratio
