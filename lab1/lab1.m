@@ -1,6 +1,6 @@
 clear all;
-% YOu can do all at once. But I just like it this w
-file = readmatrix("specimen5.txt"); % out the speciment data you want %
+% YOu can do all at once. But I just like it this way for now
+file = readmatrix("specimen1.txt"); % out the speciment data you want %
 specnum = 5; % Speciment number %
 time = file(:,1);
 force = file(:,2);
