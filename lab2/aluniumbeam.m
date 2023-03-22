@@ -27,6 +27,16 @@ SG452 = file2(:,8); %[mm/mm]
 ActualLD2 = file2(:,9); %[mm/mm]
 
 % find stress for 3 points bending
+figure(1);
+plot(ActualLD1,SG11);
+hold on
+plot(ActualLD1,SG21);
+hold on
+plot(ActualLD1,SG31);
+legend({'Strain Gauge 1', 'Strain Gauge 2', 'Strain Gauge 3'},'Location','southeast')
+xlabel('Displacement')
+ylabel('Strain')
+title('Displacement vs strain for 3 points bending')
 
 
 
