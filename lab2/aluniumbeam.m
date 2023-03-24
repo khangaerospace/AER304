@@ -20,11 +20,11 @@ time2 = file2(:,1); %[s]
 MTSforce2 = file2(:,2); %[N]
 MTSdisp2 = file2(:,3); %[mm]
 LD2 = file2(:,4); %[mm]
-SG12 = file2(:,5); %[mm/mm]
-SG22 = file2(:,6); %[mm/mm]
-SG32 = file2(:,7); %[mm/mm]
+SG12 = -file2(:,5); %[mm/mm]
+SG22 = -file2(:,6); %[mm/mm]
+SG32 = -file2(:,7); %[mm/mm]
 SG452 = file2(:,8); %[mm/mm]
-ActualLD2 = file2(:,9); %[mm/mm]
+ActualLD2 = -file2(:,9); %[mm/mm]
 
 %draw line of best fit for 3 points bending
 coef11 = polyfit(ActualLD1, SG11, 1);
@@ -34,6 +34,16 @@ dis1 = linspace(0, max(ActualLD1), 1000);
 yFit1 = polyval(coef11 , dis1);
 yFit2 = polyval(coef21 , dis1);
 yFit3 = polyval(coef31 , dis1);
+
+%draw the line of best fit for 4 points bending
+%draw line of best fit for 3 points bending
+coef12 = polyfit(ActualLD2, SG12, 1);
+coef22 = polyfit(ActualLD2, SG22, 1);
+coef32 = polyfit(ActualLD2, SG32, 1);
+dis2 = linspace(0, max(ActualLD2), 1000);
+yFit12 = polyval(coef12 , dis2);
+yFit22 = polyval(coef22 , dis2);
+yFit32 = polyval(coef32 , dis2);
 
 % find stress for 3 points bending
 figure(1);
@@ -48,13 +58,30 @@ hold on
 plot(dis1, yFit2, 'k-');
 hold on
 plot(dis1, yFit3, 'k-');
-legend({'Strain Gauge 1', 'Strain Gauge 2', 'Strain Gauge 3'},'Location','southeast')
+legend({'Strain Gauge 1', 'Strain Gauge 2', 'Strain Gauge 3'},'Location','northwest')
 xlabel('Displacement')
 ylabel('Strain')
 title('Displacement vs strain for 3 points bending')
 hold off
 
-
+% find stress for 4 points bending
+figure(2)
+plot(ActualLD2,SG12);
+hold on
+plot(ActualLD2,SG22);
+hold on
+plot(ActualLD2,SG32);
+hold on
+plot(dis2, yFit12, 'k-');
+hold on
+plot(dis2, yFit22, 'k-');
+hold on
+plot(dis2, yFit32, 'k-');
+legend({'Strain Gauge 1', 'Strain Gauge 2', 'Strain Gauge 3'},'Location','northwest')
+xlabel('Displacement')
+ylabel('Strain')
+title('Displacement vs strain for 4 points bending')
+hold off
 
 
 
